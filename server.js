@@ -3,6 +3,7 @@ const path = require('path')
 const sqlite3 = require('sqlite3')
 const bcrypt=require('bcrypt')
 const {open} = require('sqlite')
+const { request } = require('http')
 const app=express()
 app.use(express.json())
 const dbpath =path.join(__dirname,'schoolmanagement.db') 
@@ -63,12 +64,89 @@ app.post("/principal/login/",async(request,response)=>{
     }
 })
 
-app.post("/teacher/register",async(request,reponse)=>{
+app.post("/teacher/register",async(request,response)=>{
     const {username,password,email,subject} = request.body
+    const hashedPassword = await bcrypt.hash(password,10)
     const selectTeacherQuery = `SELECT * FROM teachers WHERE username = ?`
-    const dbUser = await  db.get(selectTeacherQuery)
-    if (dbUser!==undefined){
-        
+    const dbUser = await db.get(selectTeacherQuery,[username])
+    console.log(dbUser)
+    if (dbUser===undefined){
+        const createUserQuery = `
+        INSERT INTO teachers(username,password,email,subject)
+        VALUES(?,?,?,?) `
+        const dbUser = await db.run(createUserQuery,[username,hashedPassword,email,subject])
+        response.send("User created successfully")
+    }
+    else{
+        response.send("User alredy exist")
+    }
+})
+
+app.post("/teacher/login",async(request,response)=>{
+    const {username,password} = request.body 
+    const selectedQuery = `SELECT * FROM teachers WHERE username = ?` 
+    const selectedDbUser = await db.get(selectedQuery,[username]) 
+    if (selectedDbUser!==undefined){
+        const isPasswordMatch = await bcrypt.compare(password,selectedDbUser.password) 
+        if (isPasswordMatch===true){
+            response.send("login successfully")
+        }
+        else{
+            response.send("Invalid Password")
+        }
+    }
+    else{
+        response.send("User not Exist")
+    }
+})
+
+app.get("/teachers",async(request,response)=>{
+    const selectAllUser = `SELECT * FROM teachers` 
+    const dbUsers = await db.all(selectAllUser) 
+    console.log(dbUsers)
+    response.send(dbUsers)
+})
+
+//api for new student registering 
+app.post("/student/register",async(request,response)=>{
+    const {username,full_name,password,father_name,class_no,phone_number} = request.body
+    const hashedPassword = await bcrypt.hash(password,10)
+    const selectedUserQuery = `SELECT * FROM students WHERE username = ?` 
+    const dbUser = await db.get(selectedUserQuery,[username])
+    if (dbUser===undefined){
+        const newUserQuery = `
+        INSERT INTO students(username,full_name,password,father_name,class_no,phone_number)
+        VALUES(?,?,?,?,?,?)`
+        const queryResult = await db.run(newUserQuery,[username,full_name,hashedPassword,father_name,class_no,phone_number])
+        response.send("User created successfully")
+    }
+    else{
+        response.send("User already created")
+    }
+})
+
+app.get("/students",async(request,response)=>{
+    const selectedAllStudents = `SELECT full_name,father_name,class_no,phone_number,admit FROM students`
+    const students = await db.all(selectedAllStudents)
+    console.log(students)
+    response.send(students)
+})
+
+app.post("/students/login",async(request,response)=>{
+    const {username,password} = request.body 
+    const selectedQuery = `SELECT * FROM students WHERE username = ?`
+    const dbUser = await db.get(selectedQuery,[username])
+    if (dbUser===undefined){
+        response.send("User not exist")
+    }
+    else{
+        const isPassword = await bcrypt.compare(password,dbUser.password)
+        if (isPassword===true){
+            response.send("user successfully logged In")
+        }
+        else{
+            response.send("Invalid Password")
+        }
     }
 })
 

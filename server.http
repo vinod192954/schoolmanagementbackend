@@ -16,3 +16,50 @@ Content-Type: application/json
     "password":"Arun@2024"
 }
 
+### 
+POST http://localhost:3009/teacher/register/ 
+Content-Type: application/json
+
+{
+    "username":"Sunitha",
+    "password":"Sunitha@2024",
+    "email":"sunitha@gmail.com",
+    "subject":"Telugu"
+}
+
+### 
+POST  http://localhost:3009/teacher/login
+Content-Type:application/json 
+
+{
+    "username":"Sunitha",
+    "password":"Sunitha@2024"
+}
+
+### 
+GET http://localhost:3009/teachers 
+
+### 
+POST http://localhost:3009/student/register 
+Content-Type: application/json 
+
+{
+    "username":"Vishnu",
+    "full_name":"Sakinam Vishnu",
+    "password":"Vishnu@2024",
+    "father_name":"Sakinam Ramulu",
+    "class_no":8,
+    "phone_number":846516487
+}
+
+### 
+GET http://localhost:3009/students 
+
+### 
+POST http://localhost:3009/students/login
+Content-Type: application/json 
+
+{
+    "username":"Vishnu",
+    "password":"Vishnu@2024"
+}
