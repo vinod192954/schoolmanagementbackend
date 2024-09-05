@@ -21,10 +21,13 @@ POST http://localhost:3009/teacher/register/
 Content-Type: application/json
 
 {
+    "full_name":"Dharmai Rachana",
     "username":"Rachana",
     "password":"Rachana@2024",
     "email":"rachana@gmail.com",
-    "subject":"English"
+    "subject":"English",
+    "age":23,
+    "qualification":"Degree B.com"
 }
 
 ### 

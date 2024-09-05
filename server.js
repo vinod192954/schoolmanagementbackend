@@ -65,16 +65,16 @@ app.post("/principal/login/",async(request,response)=>{
 })
 
 app.post("/teacher/register",async(request,response)=>{
-    const {username,password,email,subject} = request.body
+    const {full_name,username,password,email,subject,age,qualification} = request.body
     const hashedPassword = await bcrypt.hash(password,10)
     const selectTeacherQuery = `SELECT * FROM teachers WHERE username = ?`
     const dbUser = await db.get(selectTeacherQuery,[username])
     console.log(dbUser)
     if (dbUser===undefined){
         const createUserQuery = `
-        INSERT INTO teachers(username,password,email,subject)
-        VALUES(?,?,?,?) `
-        const dbUser = await db.run(createUserQuery,[username,hashedPassword,email,subject])
+        INSERT INTO teachers(full_name,username,password,email,subject,age,qualification)
+        VALUES(?,?,?,?,?,?,?) `
+        const dbUser = await db.run(createUserQuery,[full_name,username,hashedPassword,email,subject,age,qualification])
         response.send("User created successfully")
     }
     else{
@@ -101,7 +101,7 @@ app.post("/teacher/login",async(request,response)=>{
 })
 
 app.get("/teachers",async(request,response)=>{
-    const selectAllUser = `SELECT * FROM teachers` 
+    const selectAllUser = `SELECT full_name,age,email,subject FROM teachers` 
     const dbUsers = await db.all(selectAllUser) 
     console.log(dbUsers)
     response.send(dbUsers)
