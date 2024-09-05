@@ -101,7 +101,7 @@ app.post("/teacher/login",async(request,response)=>{
 })
 
 app.get("/teachers",async(request,response)=>{
-    const selectAllUser = `SELECT full_name,age,email,subject FROM teachers` 
+    const selectAllUser = `SELECT full_name,age,email,subject,qualification,class_section FROM teachers` 
     const dbUsers = await db.all(selectAllUser) 
     console.log(dbUsers)
     response.send(dbUsers)
@@ -109,15 +109,15 @@ app.get("/teachers",async(request,response)=>{
 
 //api for new student registering 
 app.post("/student/register",async(request,response)=>{
-    const {username,full_name,password,father_name,class_no,phone_number} = request.body
+    const {username,full_name,password,father_name,class_no,phone_number,age} = request.body
     const hashedPassword = await bcrypt.hash(password,10)
     const selectedUserQuery = `SELECT * FROM students WHERE username = ?` 
     const dbUser = await db.get(selectedUserQuery,[username])
     if (dbUser===undefined){
         const newUserQuery = `
-        INSERT INTO students(username,full_name,password,father_name,class_no,phone_number)
-        VALUES(?,?,?,?,?,?)`
-        const queryResult = await db.run(newUserQuery,[username,full_name,hashedPassword,father_name,class_no,phone_number])
+        INSERT INTO students(username,full_name,password,father_name,class_no,phone_number,age)
+        VALUES(?,?,?,?,?,?,?)`
+        const queryResult = await db.run(newUserQuery,[username,full_name,hashedPassword,father_name,class_no,phone_number,age])
         response.send("User created successfully")
     }
     else{
@@ -126,7 +126,7 @@ app.post("/student/register",async(request,response)=>{
 })
 
 app.get("/students",async(request,response)=>{
-    const selectedAllStudents = `SELECT full_name,father_name,class_no,phone_number,admit FROM students`
+    const selectedAllStudents = `SELECT full_name,father_name,class_no,phone_number,age, admit FROM students`
     const students = await db.all(selectedAllStudents)
     console.log(students)
     response.send(students)

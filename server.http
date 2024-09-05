@@ -52,7 +52,8 @@ Content-Type: application/json
     "password":"Vishnu@2024",
     "father_name":"Sakinam Ramulu",
     "class_no":8,
-    "phone_number":846516487
+    "phone_number":846516487,
+    "age":22
 }
 
 ### 
