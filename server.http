@@ -21,10 +21,10 @@ POST http://localhost:3009/teacher/register/
 Content-Type: application/json
 
 {
-    "username":"Sunitha",
-    "password":"Sunitha@2024",
-    "email":"sunitha@gmail.com",
-    "subject":"Telugu"
+    "username":"Rachana",
+    "password":"Rachana@2024",
+    "email":"rachana@gmail.com",
+    "subject":"English"
 }
 
 ### 
